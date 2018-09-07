@@ -6,8 +6,8 @@
 //  Copyright © 2018 Alonso. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "ZWBaseViewController.h"
 
-@interface ZWMeViewController : NSObject
+@interface ZWMeViewController : ZWBaseViewController
 
 @end

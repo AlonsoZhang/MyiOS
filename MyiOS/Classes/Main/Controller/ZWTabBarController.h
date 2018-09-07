@@ -7,7 +7,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CYLTabBarController.h>
 
 @interface ZWTabBarController : NSObject
+
+@property (nonatomic, readonly, strong) CYLTabBarController *tabBarController;
+@property (nonatomic, copy) NSString *context;
 
 @end

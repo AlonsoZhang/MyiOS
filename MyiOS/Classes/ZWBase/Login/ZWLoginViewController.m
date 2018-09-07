@@ -25,7 +25,7 @@
     //    [(AppDelegate*)AppDelegateInstance setUpHomeViewController];
 }
 - (IBAction)loginButton:(UIButton *)sender {
-    //[(AppDelegate*)AppDelegateInstance setUpHomeViewController];
+    [(AppDelegate*)AppDelegateInstance setUpHomeViewController];
     
     //    NSString *username = _ZWUserNameTextField.text;
     //    NSString *psd = _ZWUserPasswordTextField.text;

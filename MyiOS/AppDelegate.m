@@ -101,6 +101,104 @@
     [self.window makeKeyAndVisible];
 }
 
+//进入主页
+-(void)setUpHomeViewController{
+    //左侧菜单栏
+//    LeftViewController *leftViewController = [[LeftViewController alloc] init];
+//    ZWNavigationController *lefNav = [[ZWNavigationController alloc]initWithRootViewController:leftViewController];
+//    //右侧菜单栏
+//    RightViewController *rightViewController = [[RightViewController alloc] init];
+//    ZWNavigationController *rigNav = [[ZWNavigationController alloc]initWithRootViewController:rightViewController];
+
+    //    // 设置主窗口,并设置根控制器
+    //    [CYLPlusButtonSubclass registerPlusButton];
+    //    ZWTabBarController *tabBarControllerConfig = [[ZWTabBarController alloc] init];
+    //    CYLTabBarController *tabBarController = tabBarControllerConfig.tabBarController;
+    //放在代理下面 不会有tabbar标记    这个要放开self.window.rootViewController = tabBarController; //这种可以实现tabbar 按钮的动画
+    //    ZWNavigationController *nav = [[ZWNavigationController alloc]initWithRootViewController:_tabBarController];
+    
+    ZWTabBarController *tabBarControllerConfig = [[ZWTabBarController alloc] init];
+    _tabBarController = tabBarControllerConfig.tabBarController;
+    _tabBarController.delegate = self;
+    self.nav = [[ZWNavigationController alloc]initWithRootViewController:_tabBarController];
+    
+    
+    //SWRevealViewController 这是一种侧滑
+    //    [self swRevealViewController:leftViewController right:rightViewController tabbar:tabBarController];
+    
+    //MMDrawerController  这是一种侧滑
+    [self mmDrawerController:nil right:nil tabbar:_tabBarController navController:self.nav];
+    [self.window addSubview:[[YYFPSLabel alloc] initWithFrame:CGRectMake(20, 70, 0, 0)]];
+    
+    
+    
+    
+    //   =======================================================================
+    // 检查更新
+    //    [[ZWRequestManager sharedManager] GET:[ZWShunJianBaseUrl stringByAppendingPathComponent:@"jsons/updateapp.json"] parameters:nil completion:^(ZWBaseResponse *response) {
+    //        [self checkVersion:response];
+    //    }];
+}
+
+//MMDrawerController  这是一种侧滑
+-(void)mmDrawerController:(UIViewController*)leftViewController right:(UIViewController*)rightViewController tabbar:(CYLTabBarController*)tabBarController navController:(ZWNavigationController*)nav{
+    self.drawerController =[[MMDrawerController alloc]initWithCenterViewController:nav leftDrawerViewController:leftViewController rightDrawerViewController:rightViewController];
+    //4、设置打开/关闭抽屉的手势
+    self.drawerController.openDrawerGestureModeMask = MMOpenDrawerGestureModeAll;
+    self.drawerController.closeDrawerGestureModeMask =MMCloseDrawerGestureModeAll;
+    //5、设置左边抽屉显示的多少
+    self.drawerController.maximumLeftDrawerWidth = 320.0;
+    //    self.drawerController.maximumRightDrawerWidth = 80;
+    [self.drawerController setShowsShadow:YES];
+    
+    //    self.window.rootViewController = tabBarController; //这种可以实现tabbar 按钮的动画
+    self.window.rootViewController = self.drawerController;
+    
+    [self.window makeKeyAndVisible];
+    
+    [self customizeInterfaceWithTabBarController:tabBarController];
+    
+}
+
+- (void)customizeInterfaceWithTabBarController:(CYLTabBarController *)tabBarController {
+    
+    [tabBarController hideTabBadgeBackgroundSeparator];
+    
+    //添加小红点
+    UIViewController *viewController = tabBarController.viewControllers[0];
+    ZWLog(@"tabBarController = %@",viewController.tabBarItem);
+    ZWLog(@"tabBarController == %@",viewController.tabBarItem.cyl_tabButton);
+    UIView *tabBadgePointView0 = [UIView cyl_tabBadgePointViewWithClolor:RANDOM_COLOR radius:4.5];
+    [viewController.tabBarItem.cyl_tabButton cyl_setTabBadgePointView:tabBadgePointView0];
+    [viewController cyl_showTabBadgePoint];
+    
+    UIView *tabBadgePointView1 = [UIView cyl_tabBadgePointViewWithClolor:RANDOM_COLOR radius:4.5];
+    @try {
+        [tabBarController.viewControllers[1] cyl_setTabBadgePointView:tabBadgePointView1];
+        [tabBarController.viewControllers[1] cyl_showTabBadgePoint];
+        
+        UIView *tabBadgePointView2 = [UIView cyl_tabBadgePointViewWithClolor:RANDOM_COLOR radius:4.5];
+        [tabBarController.viewControllers[2] cyl_setTabBadgePointView:tabBadgePointView2];
+        [tabBarController.viewControllers[2] cyl_showTabBadgePoint];
+        
+        [tabBarController.viewControllers[3] cyl_showTabBadgePoint];
+        
+        //添加提示动画，引导用户点击
+        [self addScaleAnimationOnView:tabBarController.viewControllers[3].cyl_tabButton.cyl_tabImageView repeatCount:20];
+    } @catch (NSException *exception) {}
+}
+
+#pragma mark - 缩放动画
+- (void)addScaleAnimationOnView:(UIView *)animationView repeatCount:(float)repeatCount {
+    //需要实现的帧动画，这里根据需求自定义
+    CAKeyframeAnimation *animation = [CAKeyframeAnimation animation];
+    animation.keyPath = @"transform.scale";
+    animation.values = @[@1.0,@1.3,@0.9,@1.15,@0.95,@1.02,@1.0];
+    animation.duration = 1;
+    animation.repeatCount = repeatCount;
+    animation.calculationMode = kCAAnimationCubic;
+    [animationView.layer addAnimation:animation forKey:nil];
+}
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.

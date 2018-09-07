@@ -6,8 +6,8 @@
 //  Copyright © 2018 Alonso. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import "ZWStaticTableViewController.h"
 
-@interface ZWMessageViewController : NSObject
+@interface ZWMessageViewController : ZWStaticTableViewController<UITabBarControllerDelegate>
 
 @end
